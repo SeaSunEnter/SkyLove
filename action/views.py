@@ -84,7 +84,7 @@ class ConsultingUpdate(LoginRequiredMixin, UpdateView):
 def treatment_overview(request):
     mobile = request.GET.get('mobile')
     fname = request.GET.get('fname')
-    treatments = Treatment.objects.all()
+    treatments = Treatment.objects.all().filter(customer__deleted=False)
     if mobile:
         treatments = treatments.filter(customer__mobile__icontains=mobile)
     if fname:

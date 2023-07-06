@@ -266,7 +266,6 @@ class InvoiceAppendForm(forms.ModelForm):
 
 class InvoiceFeeForm(forms.ModelForm):
     service = forms.CharField(
-        max_length=128,
         label='Dịch vụ',
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Service'})
     )

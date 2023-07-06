@@ -123,7 +123,7 @@ class InvoicePaid(InvoiceCommon):
 
 
 class InvoiceProcess(InvoiceCommon):
-    description = models.TextField(max_length=128)
+    description = models.TextField()
     paid = MoneyField(max_digits=16, decimal_places=0, default_currency='VND', default=0)
     payed = models.BooleanField(default=False)
 
@@ -139,7 +139,7 @@ class InvoiceProcess(InvoiceCommon):
 
 class InvoiceFee(models.Model):
     tag = models.IntegerField()
-    service = models.CharField(max_length=128, null=False)
+    service = models.TextField(null=False)
     price = MoneyField(max_digits=16, decimal_places=0, default_currency='VND', default=0)
 
     def __str__(self):

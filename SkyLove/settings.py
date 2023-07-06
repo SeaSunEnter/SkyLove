@@ -99,7 +99,7 @@ DATABASES = {
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'skylove1',
+    'NAME': 'skylove',
     'HOST': '127.0.0.1',
     'USER': 'admin',
     'PASSWORD': 'ABC@1357xyz',
