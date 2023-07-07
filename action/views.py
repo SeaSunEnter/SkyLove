@@ -1,3 +1,4 @@
+import csv
 import datetime
 import io
 
@@ -887,6 +888,43 @@ def invoice_debt(request):
     }
 
     return render(request, 'action/invoice/debt.html', context)
+
+
+def debt_view_csv(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    fn = "debt_" + datetime.datetime.now().strftime("%d-%m-%Y_%H-%M-%S") + ".csv"
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={
+            "Content-Disposition":
+                'attachment; filename=' + fn
+        },
+    )
+
+    writer = csv.writer(response)
+
+    for inv in InvoiceDebt.objects.all():
+
+        if inv.inv_fee_note is not None:
+            if ';' in inv.inv_fee_note:
+                inv.inv_fee_note = inv.inv_fee_note.replace(';', ' -')
+
+        if inv.inv_pay_note is not None:
+            if ';' in inv.inv_pay_note:
+                inv.inv_pay_note = inv.inv_pay_note.replace(';', ' -')
+
+        writer.writerow([
+            inv.customer_name,
+            inv.inv_fee_note,
+            inv.inv_fee_paid,
+            inv.inv_pay_note,
+            inv.inv_pay_paid,
+            inv.debt
+        ])
+        # writer.writerow(["First row", "Foo", "Bar", "Baz"])
+        # writer.writerow(["Second row", "A", "B", "C", '"Testing"', "Here's a quote"])
+
+    return response
 
 
 def some_view(request):

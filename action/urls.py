@@ -35,7 +35,9 @@ urlpatterns = [
   path('invoice/<int:pk>/viewpdf/', views.InvoiceViewPdf.as_view(), name='invoice_view_pdf'),
   path('invoice/<int:pk>/update/', views.InvoiceUpdate.as_view(), name='invoice_update'),
   path('invoice/<int:pk>/append/', views.InvoiceAppend.as_view(), name='invoice_append'),
+
   path('invoice/debt', views.invoice_debt, name='invoice_debt'),
+  path('invoice/debt/csv', views.debt_view_csv, name='invoice_debt_csv'),
 
   path('invoicepro/<int:pk>/update/', views.InvoiceProcessUpdate.as_view(), name='invoice_pro_update'),
   path('invoicefee/<int:pk>/init/', views.InvoiceFeeInit.as_view(), name='invoice_fee_init'),
