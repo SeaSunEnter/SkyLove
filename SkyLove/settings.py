@@ -67,8 +67,7 @@ ROOT_URLCONF = 'SkyLove.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [str(BASE_DIR.joinpath('templates'))]
-        ,
+        'DIRS': [str(BASE_DIR.joinpath('templates'))],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -97,13 +96,13 @@ DATABASES = {
 """
 
 DATABASES = {
-  'default': {
-    'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'skylove',
-    'HOST': '127.0.0.1',
-    'USER': 'admin',
-    'PASSWORD': 'ABC@1357xyz',
-    'PORT': '3306', }
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'skylove',
+        'HOST': '127.0.0.1',
+        'USER': 'admin',
+        'PASSWORD': 'ABC@1357xyz',
+        'PORT': '3306', }
 }
 """"""
 
@@ -152,14 +151,14 @@ USD = moneyed.add_currency(
     code='USD',
     numeric='840',
     name='US Dollar',
-    countries=('UNITED STATES OF AMERICA',)
+    countries=['UNITED STATES OF AMERICA']
 )
 
 VND = moneyed.add_currency(
     code='VND',
     numeric='704',
     name='Đồng',
-    countries=('VIETNAM',)
+    countries=['VIETNAM']
 )
 
 CURRENCIES = ('USD', 'VND')
@@ -172,7 +171,7 @@ CURRENCY_CHOICES = [('USD', 'USD $'), ('VND', 'VN ₫')]
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
+STATIC_ROOT = os.path.join(PROJECT_ROOT, STATIC_URL)
 LOGIN_REDIRECT_URL = 'manager:dashboard'
 # LOGIN_URL = 'manager:login'
 MEDIA_URL = '/media/'  # This is just for url i.e https://l.me/media/l.jpg

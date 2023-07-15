@@ -112,6 +112,8 @@
             <p class="text-muted mt-3 mb-0">
               <i class="mdi mdi-reload mr-1" aria-hidden="true"></i> HRMS
             </p>
+            <p>
+            </p>
           </div>
         </div>
       </div>
@@ -302,6 +304,87 @@
                       </a>
                     </td>
                   </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-body">
+            <h4 class="text-center text-dribbble">SINH NHẬT THÁNG {{ today.month }}
+            </h4>
+            <br>
+            <div class="table-responsive">
+              <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>
+                    Photo
+                  </th>
+                  <th>
+                    Họ tên
+                  </th>
+                  <th>
+                    Mobile
+                  </th>
+                  <th>
+                    Birthday
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for bd in birthdays %}
+                  {% if bd.table_name == 'Customer' %}
+                    {% for customer in all_customers %}
+                      {% if customer.id == bd.table_id %}
+                        <tr>
+                          <td class="font-weight-medium">
+                            {% if customer.thumb.url != null %}
+                              <img src="{{ customer.thumb.url }}" class='img-fluid rounded-circle' alt="">
+                            {% else %}
+                              <img src="{% static 'images/No_Image.png' %}" class='img-fluid rounded-circle' alt="">
+                            {% endif %}
+                          </td>
+                          <td>
+                            <a href="{% url 'manager:customer_view' bd.table_id %}">
+                              {{ customer.fullname }}
+                            </a>
+                          </td>
+                          <td>
+                            {{ customer.mobile }}
+                          </td>
+                          <td>
+                            <a href="{% url 'manager:customer_view' bd.table_id %}">
+                              {{ customer.dob }}
+                            </a>
+                          </td>
+                        </tr>
+                      {% endif %}
+                    {% endfor %}
+                  {% else %}
+                    {% if bd.table_name == 'Employee' %}
+                      {% for employee in employees %}
+                        {% if employee.id == bd.table_id %}
+                          <tr>
+                            <td class="font-weight-medium">
+                            </td>
+                            <td>
+                              <a href="{% url 'manager:employee_view' bd.table_id %}">
+                                {{ employee.fullname }}
+                              </a>
+                            </td>
+                            <td>
+                              {{ employee.mobile }}
+                            </td>
+                            <td>
+                              <a href="{% url 'manager:employee_view' bd.table_id %}">
+                                {{ employee.dob }}
+                              </a>
+                            </td>
+                          </tr>
+                        {% endif %}
+                      {% endfor %}
+                    {% endif %}
+                  {% endif %}
                 {% endfor %}
                 </tbody>
               </table>

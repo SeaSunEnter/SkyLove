@@ -152,29 +152,15 @@ class InvoiceFee(models.Model):
         db_table = 'InvoiceFee'
 
 
-class DebtCommon(models.Model):
-    class Meta:
-        abstract = True
-
+class DebtTmp(models.Model):
     invoice = models.SmallIntegerField()
-    # invoice_fee = models.SmallIntegerField()
-    # invoice_pro = models.SmallIntegerField()
     customer_id = models.SmallIntegerField(null=True)
     customer_name = models.CharField(max_length=40, null=True)
-    # inv_fee = MoneyField(max_digits=16, decimal_places=0, default_currency='VND', default=0, null=True)
     inv_fee_note = models.CharField(max_length=128, null=True)
     inv_fee_paid = MoneyField(max_digits=16, decimal_places=0, default_currency='VND', default=0, null=True)
-    # inv_pay = MoneyField(max_digits=16, decimal_places=0, default_currency='VND', default=0, null=True)
     inv_pay_note = models.CharField(max_length=128, null=True)
     inv_pay_paid = MoneyField(max_digits=16, decimal_places=0, default_currency='VND', default=0, null=True)
     debt = MoneyField(max_digits=16, decimal_places=0, default_currency='VND', default=0, null=True)
 
-
-class InvoiceDebt(DebtCommon):
     class Meta:
-        db_table = 'InvoiceDebt'
-
-
-class Debt(DebtCommon):
-    class Meta:
-        db_table = 'Debt'
+        db_table = 'DebtTmp'

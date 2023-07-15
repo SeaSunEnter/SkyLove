@@ -129,3 +129,11 @@ class Service(models.Model):
 
     class Meta:
         db_table = 'Service'
+
+
+class Birthday(models.Model):
+    table_name = models.CharField(max_length=16)
+    table_id = models.SmallIntegerField()
+
+    class Meta:
+        db_table = 'Birthday'

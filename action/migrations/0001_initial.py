@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='InvoiceDebt',
+            name='DebtTmp',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('invoice', models.SmallIntegerField()),
@@ -75,7 +75,7 @@ class Migration(migrations.Migration):
                 ('debt', djmoney.models.fields.MoneyField(decimal_places=0, default=Decimal('0'), default_currency='VND', max_digits=16, null=True)),
             ],
             options={
-                'db_table': 'InvoiceDebt',
+                'db_table': 'DebtTmp',
             },
         ),
         migrations.CreateModel(

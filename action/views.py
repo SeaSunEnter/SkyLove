@@ -22,7 +22,7 @@ from action.forms import TreatmentForm, TreatmentFilterForm, TreatmentAppendForm
     ConsultingForm, TreatmentProcessForm, InvoiceForm, InvoiceAppendForm, InvoiceFilterForm, InvoiceProcessForm, \
     TreatmentAssetForm, InvoiceFeeForm, InvoiceAppendFeeForm, InvoiceFeeCopyForm
 from action.models import Treatment, TreatmentProcess, Consulting, TreatmentProcessImages, Invoice, InvoiceProcess, \
-    TreatmentAsset, InvoiceFee, InvoiceDebt
+    TreatmentAsset, InvoiceFee, DebtTmp
 from inventory.models import Inventory
 from manager.models import Customer, Service
 
@@ -92,7 +92,7 @@ def treatment_overview(request):
         treatments = treatments.filter(customer__fullname__contains=fname)
 
     context = {
-        'treat_total': Treatment.objects.all().count(),
+        'treat_total': Treatment.objects.all().filter(customer__deleted=False).count(),
         'treat_lookup': treatments.count(),
         'form': TreatmentFilterForm(),
         'treatments': treatments.order_by('-id')
@@ -768,7 +768,9 @@ def invoice_debt(request):
     if customers.count() < 1:
         return render(request, 'action/invoice/overview.html', None)
 
-    InvoiceDebt.objects.all().delete()
+    DebtTmp.objects.all().delete()
+
+    cur_id = 0
 
     for inv in invoices:
         inv_tag = inv.id
@@ -858,7 +860,9 @@ def invoice_debt(request):
             if cur_description is not None:
                 cur_description = cur_description[:64]
 
-            InvoiceDebt.objects.create(
+            cur_id += 1
+            DebtTmp.objects.create(
+                id=cur_id,
                 invoice=inv_tag,
                 customer_id=customer_id,
                 customer_name=customer_name,
@@ -869,7 +873,9 @@ def invoice_debt(request):
                 debt=cur_debt,
             )
         if has_sum:
-            InvoiceDebt.objects.create(
+            cur_id += 1
+            DebtTmp.objects.create(
+                id=cur_id,
                 invoice=inv_tag,
                 customer_id=None,
                 customer_name=None,
@@ -884,7 +890,7 @@ def invoice_debt(request):
         'invoices': invoices.order_by('id'),
         'inv_fees': inv_fees,
         'inv_pros': inv_pros,
-        'debts': InvoiceDebt.objects.all(),
+        'debts': DebtTmp.objects.all(),
     }
 
     return render(request, 'action/invoice/debt.html', context)
@@ -903,7 +909,7 @@ def debt_view_csv(request):
 
     writer = csv.writer(response)
 
-    for inv in InvoiceDebt.objects.all():
+    for inv in DebtTmp.objects.all():
 
         if inv.inv_fee_note is not None:
             if ';' in inv.inv_fee_note:

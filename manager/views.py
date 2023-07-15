@@ -10,11 +10,12 @@ from django.contrib.auth import get_user_model, logout
 from django.views import View
 from django.views.generic import TemplateView, CreateView, ListView, DetailView, UpdateView, DeleteView
 
+from SkyLove.utils import check_birthday
 from action.models import Treatment, Invoice
 from apptevent.models import Appointment
 from manager.forms import RegistrationForm, EmployeeForm, CustomerForm, CustomerSourceForm, \
     CustomerFilterForm, DepartmentForm, ServiceForm, UserUpdateForm, LoginForm, SetPasswordForm
-from manager.models import Employee, Department, Customer, CustomerSource, Service, LoginLogs
+from manager.models import Employee, Department, Customer, CustomerSource, Service, LoginLogs, Birthday
 
 
 # Create your views here.
@@ -101,6 +102,31 @@ class Dashboard(LoginRequiredMixin, ListView):
         context['customers'] = Customer.objects.order_by('-id')[:5]
         context['appointments'] = Appointment.objects.filter(appTime__day=datetime.date.today().day)
         context['appointment_total'] = Appointment.objects.all().count()
+
+        check_birthday()
+        if Birthday is not None:
+            if Birthday.objects.all().count() > 0:
+                context['today'] = datetime.datetime.today()
+                context['all_customers'] = Customer.objects.filter(deleted=False)
+                context['employees'] = Employee.objects.all()
+                context['birthdays'] = Birthday.objects.all()
+
+                # return render(request, 'manager/dashboard/birthday.html', context)
+                # return reverse('manager:birthday')
+                # return context
+
+        return context
+
+
+# Employee's Controller
+class BirthdayView(LoginRequiredMixin, ListView):
+    template_name = 'manager/dashboard/birthday.html'
+    model = get_user_model()
+    login_url = 'manager:login'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['birthdays'] = Birthday.objects.all()
         return context
 
 
@@ -171,6 +197,7 @@ def customer_overview(request):
         'customers': customers.filter(deleted=False).order_by('-id'),
         'treatments': Treatment.objects.all().distinct()
     }
+
     return render(request, 'manager/customer/overview.html', context)
 
 

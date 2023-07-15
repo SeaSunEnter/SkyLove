@@ -172,6 +172,7 @@ def inventory_overview(request):
 
     InventoryTmp.objects.all().delete()
 
+    cur_id = 0
     for asset in assets:
         ass_id = asset.id
 
@@ -265,7 +266,9 @@ def inventory_overview(request):
             if ass_name is not None:
                 ass_name = ass_name[:50]
 
+            cur_id += 1
             InventoryTmp.objects.create(
+                id=cur_id,
                 timeI=cur_time_in,
                 input=cur_input,
                 asset_id=ass_id,
@@ -279,7 +282,9 @@ def inventory_overview(request):
             )
 
         if has_sum:
+            cur_id += 1
             InventoryTmp.objects.create(
+                id=cur_id,
                 timeI=None,
                 input=None,
                 asset_id=ass_id,

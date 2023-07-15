@@ -14,6 +14,7 @@ urlpatterns = [
     path('user/password_change', views.password_change, name='user_password_change'),
 
     path('dashboard/', views.Dashboard.as_view(), name='dashboard'),
+    path('birthday/', views.BirthdayView.as_view(), name='birthday'),
 
     # Employee Routes
     path('employee/', views.EmployeeAll.as_view(), name='employee_all'),
