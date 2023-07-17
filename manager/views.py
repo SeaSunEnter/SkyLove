@@ -107,8 +107,8 @@ class Dashboard(LoginRequiredMixin, ListView):
         if Birthday is not None:
             if Birthday.objects.all().count() > 0:
                 context['today'] = datetime.datetime.today()
-                context['all_customers'] = Customer.objects.filter(deleted=False)
-                context['employees'] = Employee.objects.all()
+                context['all_customers'] = Customer.objects.filter(deleted=False).order_by('dob')
+                context['employees'] = Employee.objects.all().order_by('dob')
                 context['birthdays'] = Birthday.objects.all()
 
                 # return render(request, 'manager/dashboard/birthday.html', context)
