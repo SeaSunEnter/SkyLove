@@ -22,7 +22,7 @@ from action.forms import TreatmentForm, TreatmentFilterForm, TreatmentAppendForm
     ConsultingForm, TreatmentProcessForm, InvoiceForm, InvoiceAppendForm, InvoiceFilterForm, InvoiceProcessForm, \
     TreatmentAssetForm, InvoiceFeeForm, InvoiceAppendFeeForm, InvoiceFeeCopyForm
 from action.models import Treatment, TreatmentProcess, Consulting, TreatmentProcessImages, Invoice, InvoiceProcess, \
-    TreatmentAsset, InvoiceFee, DebtTmp
+    TreatmentAsset, InvoiceFee, DebtTmp, TreatmentAssetTmp
 from inventory.models import Inventory
 from manager.models import Customer, Service
 
@@ -158,12 +158,31 @@ class TreatmentView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         try:
-            query_treat = TreatmentProcess.objects.filter(tag=self.object.pk).order_by('date')
-            context["treat_pros"] = query_treat
-            query_img = TreatmentProcessImages.objects.filter(treat=self.object.pk)
-            context["treat_pro_images"] = query_img
-            query_ass = TreatmentAsset.objects.filter(treat=self.object.pk).order_by('asset__name')
-            context["treat_assets"] = query_ass
+            context["treat_pros"] = \
+                TreatmentProcess.objects.filter(tag=self.object.pk).order_by('date')
+            context["treat_pro_images"] = \
+                TreatmentProcessImages.objects.filter(treat=self.object.pk)
+
+            treat_assets = TreatmentAsset.objects.filter(treat=self.object.pk).order_by('asset__name')
+            TreatmentAssetTmp.objects.all().delete()
+            cur_id = 0
+            ass_sum = 0
+            for treat_ass in treat_assets:
+                cur_id += 1
+                ass_price = treat_ass.asset.price
+                ass_quantity = treat_ass.quantity
+                ass_sum += ass_price * ass_quantity
+                TreatmentAssetTmp.objects.create(
+                    id=cur_id,
+                    asset_name=treat_ass.asset.name,
+                    asset_price=ass_price,
+                    asset_quantity=ass_quantity,
+                    asset_sum=ass_price * ass_quantity
+                )
+
+            context["treat_assets"] = TreatmentAssetTmp.objects.all()
+            context["sum_price"] = ass_sum
+
             query_inv = None
             cur_customer = Treatment.objects.get(id=self.kwargs['pk']).customer_id
             for inv in Invoice.objects.all():

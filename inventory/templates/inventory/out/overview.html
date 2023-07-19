@@ -22,16 +22,22 @@
                   <thead>
                   <tr>
                     <th>
-                      Photo
+                      Khách hàng
                     </th>
                     <th>
-                      Họ tên
+                      Dịch vụ
                     </th>
                     <th>
-                      Số điện thoại
+                      Vật tư
                     </th>
                     <th>
-                      Time
+                      Số lượng
+                    </th>
+                    <th>
+                      Giá
+                    </th>
+                    <th>
+                      Thành tiền
                     </th>
                   </tr>
                   </thead>
@@ -55,13 +61,33 @@
                         {% endif %}
                       </td>
                       <td>
-                        <a href="{% url 'inventory:asset_view' delivery.asset_id %}">
-                          {{ delivery.asset_name }}
+                        {% if delivery.asset_name == "Tổng cộng" %}
+                          <div class="text-lg-right">
+                            {{ delivery.asset_name }}
+                          </div>
+                        {% else %}
+                          <a href="{% url 'inventory:asset_view' delivery.asset_id %}">
+                            {{ delivery.asset_name }}
+                          </a>
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if delivery.quantity is not None %}
+                          <a href="{% url 'action:treatment_view' delivery.treatment_id %}">
+                          {{ delivery.quantity }}
+                        {% endif %}
                         </a>
                       </td>
                       <td>
+                        {% if delivery.asset_price is not None %}
+                          <a href="{% url 'action:treatment_view' delivery.treatment_id %}">
+                            {{ delivery.asset_price }}
+                          </a>
+                        {% endif %}
+                      </td>
+                      <td>
                         <a href="{% url 'action:treatment_view' delivery.treatment_id %}">
-                          {{ delivery.quantity }}
+                          {{ delivery.paid }}
                         </a>
                       </td>
                     </tr>

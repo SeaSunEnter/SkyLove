@@ -71,6 +71,16 @@ class TreatmentAsset(models.Model):
         db_table = 'TreatmentAsset'
 
 
+class TreatmentAssetTmp(models.Model):
+    asset_name = models.CharField(max_length=80)
+    asset_quantity = models.SmallIntegerField()
+    asset_price = MoneyField(max_digits=16, decimal_places=0, default_currency='VND', default=0)
+    asset_sum = MoneyField(max_digits=16, decimal_places=0, default_currency='VND', default=0)
+
+    class Meta:
+        db_table = 'TreatmentAssetTmp'
+
+
 class Consulting(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     consultor = models.ForeignKey(Employee, related_name='consultor', on_delete=models.CASCADE)

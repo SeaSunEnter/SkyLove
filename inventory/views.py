@@ -15,7 +15,7 @@ from django.views.generic.edit import FormMixin
 from SkyLove.utils import render_to_pdf
 from action.models import TreatmentAsset, Treatment
 from inventory.forms import AssetCategoryForm, AssetForm, SupplierForm, AssetUnitForm, AssetFilterForm, InventoryForm
-from inventory.models import AssetCategory, Asset, Supplier, AssetUnit, Inventory, Purchase, Delivery, InventoryTmp
+from inventory.models import AssetCategory, Asset, Supplier, AssetUnit, Inventory, Purchase, DeliveryTmp, InventoryTmp
 from manager.models import Customer, Service
 
 
@@ -159,7 +159,6 @@ def inv_purchases():
 
 
 def inventory_overview(request):
-
     category = request.GET.get('category')
     asset_name = request.GET.get('asset_name')
 
@@ -385,12 +384,22 @@ def deliver_overview(request):
         customers = customers.filter(mobile__contains=mobile)
     if fname:
         customers = customers.filter(fullname__contains=fname)
+
+    invs = Inventory.objects.all()
+    i = 0
+    for inv in invs:
+        i += 1
+        if inv.id != i:
+            break
     """
+
     customers = Customer.objects.filter(deleted=False)
     deliveries = TreatmentAsset.objects.all().order_by('treat')
 
-    Delivery.objects.all().delete()
-
+    DeliveryTmp.objects.all().delete()
+    cur_id = 0
+    sum_paid = 0
+    sum_count = 0
     for delivery in deliveries:
         cust_id = Treatment.objects.get(id=delivery.treat).customer_id
         cust_name = customers.get(id=cust_id)
@@ -399,23 +408,74 @@ def deliver_overview(request):
         treat_name = Service.objects.get(id=serv_id).name
         asst_id = delivery.asset_id
         asst_name = Asset.objects.get(id=delivery.asset_id).name
+        asst_price = Asset.objects.get(id=delivery.asset_id).price
+        asst_paid = asst_price * delivery.quantity
         i_first = deliveries.first().id
         if delivery.id > i_first:
             if delivery.treat == deliveries.get(id=(delivery.id - 1)).treat:
                 cust_id = cust_name = None
                 treat_name = None
-        Delivery.objects.create(
+
+        cur_id += 1
+        DeliveryTmp.objects.create(
+            id=cur_id,
             customer_id=cust_id,
             customer_name=cust_name,
             treatment_id=treat_id,
             treatment_name=treat_name,
             asset_id=asst_id,
             asset_name=asst_name,
-            quantity=delivery.quantity
+            asset_price=asst_price,
+            quantity=delivery.quantity,
+            paid=asst_paid
+        )
+        sum_paid += asst_paid
+        sum_count += 1
+
+        if delivery.id > i_first:
+            if (
+                (delivery.id < deliveries.count()) and (delivery.treat != deliveries.get(id=(delivery.id + 1)).treat)
+            ):
+                cust_id = cust_name = None
+                treat_name = None
+                asst_name = "Tổng cộng"
+                asst_price = None
+                asst_paid = sum_paid
+                cur_id += 1
+                DeliveryTmp.objects.create(
+                    id=cur_id,
+                    customer_id=cust_id,
+                    customer_name=cust_name,
+                    treatment_id=treat_id,
+                    treatment_name=treat_name,
+                    asset_id=asst_id,
+                    asset_name=asst_name,
+                    asset_price=asst_price,
+                    quantity=None,
+                    paid=asst_paid
+                )
+                sum_paid = 0
+                sum_count = 0
+
+    if sum_count > 1:
+        asst_name = "Tổng cộng"
+        cur_id += 1
+        DeliveryTmp.objects.create(
+            id=cur_id,
+            customer_id=None,
+            customer_name=None,
+            treatment_id=treat_id,
+            treatment_name=None,
+            asset_id=None,
+            asset_name=asst_name,
+            asset_price=None,
+            quantity=None,
+            paid=sum_paid
         )
 
     context = {
-        'deliveries': Delivery.objects.all()
+        'deliveries': DeliveryTmp.objects.all(),
+        # 'curI': i
     }
     return render(request, 'inventory/out/overview.html', context)
 

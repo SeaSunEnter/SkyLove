@@ -77,17 +77,19 @@ class Purchase(models.Model):
         db_table = 'Purchase'
 
 
-class Delivery(models.Model):
+class DeliveryTmp(models.Model):
     customer_id = models.SmallIntegerField(null=True)
     customer_name = models.CharField(max_length=40, null=True)
     treatment_id = models.SmallIntegerField(null=True)
     treatment_name = models.CharField(max_length=64, null=True)
     asset_id = models.SmallIntegerField(null=True)
     asset_name = models.CharField(max_length=80, null=True)
+    asset_price = MoneyField(max_digits=16, decimal_places=0, default_currency='VND', default=0, null=True)
     quantity = models.SmallIntegerField(null=True)
+    paid = MoneyField(max_digits=16, decimal_places=0, default_currency='VND', default=0, null=True)
 
     class Meta:
-        db_table = 'Delivery'
+        db_table = 'DeliveryTmp'
 
 
 class InventoryTmp(models.Model):

@@ -154,16 +154,37 @@
                       <tr>
                         <th>
                           <a href=" {% url 'action:treatment_asset_edit' pk=treat_ass.id %}">
-                            {{ treat_ass.asset }}
+                            {{ treat_ass.asset_name }}
                           </a>
                         </th>
                         <td>
                           <a href=" {% url 'action:treatment_asset_edit' pk=treat_ass.id %}">
-                            {{ treat_ass.quantity }}
+                            {{ treat_ass.asset_quantity }}
                           </a>
+                        </td>
+                        <td>
+                          <div class="text-lg-right">
+                            <a href=" {% url 'action:treatment_asset_edit' pk=treat_ass.id %}">
+                              {{ treat_ass.asset_sum }}
+                            </a>
+                          </div>
                         </td>
                       </tr>
                     {% endfor %}
+                    <tr>
+                      <th>
+                        <div class="text-lg-right">
+                          Tổng cộng:
+                        </div>
+                      </th>
+                      <td>
+                      </td>
+                      <td>
+                        <div class="text-danger text-lg-right">
+                          {{ sum_price }}
+                        </div>
+                      </td>
+                    </tr>
                   </table>
                 </div>
                 <div class="text-right mt-3">
