@@ -72,6 +72,7 @@ class TreatmentAsset(models.Model):
 
 
 class TreatmentAssetTmp(models.Model):
+    asset_id = models.SmallIntegerField()
     asset_name = models.CharField(max_length=80)
     asset_quantity = models.SmallIntegerField()
     asset_price = MoneyField(max_digits=16, decimal_places=0, default_currency='VND', default=0)

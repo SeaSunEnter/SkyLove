@@ -174,6 +174,7 @@ class TreatmentView(LoginRequiredMixin, DetailView):
                 ass_sum += ass_price * ass_quantity
                 TreatmentAssetTmp.objects.create(
                     id=cur_id,
+                    asset_id=treat_ass.asset.id,
                     asset_name=treat_ass.asset.name,
                     asset_price=ass_price,
                     asset_quantity=ass_quantity,
