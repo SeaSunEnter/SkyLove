@@ -80,13 +80,13 @@
                       </td>
                       <td>
                         {% if delivery.asset_price is not None %}
-                          <a href="{% url 'action:treatment_view' delivery.treatment_id %}">
+                          <a href="{% url 'inventory:asset_update' delivery.asset_id %}">
                             {{ delivery.asset_price }}
                           </a>
                         {% endif %}
                       </td>
                       <td>
-                        <a href="{% url 'action:treatment_view' delivery.treatment_id %}">
+                        <a href="{% url 'inventory:asset_update' delivery.asset_id %}">
                           {{ delivery.paid }}
                         </a>
                       </td>
