@@ -400,6 +400,8 @@ def deliver_overview(request):
     cur_id = 0
     sum_paid = 0
     sum_count = 0
+    treat_id = 0
+    asst_id = 0
     for delivery in deliveries:
         cust_id = Treatment.objects.get(id=delivery.treat).customer_id
         cust_name = customers.get(id=cust_id)
@@ -466,7 +468,7 @@ def deliver_overview(request):
             customer_name=None,
             treatment_id=treat_id,
             treatment_name=None,
-            asset_id=None,
+            asset_id=asst_id,
             asset_name=asst_name,
             asset_price=None,
             quantity=None,
