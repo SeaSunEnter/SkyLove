@@ -482,63 +482,28 @@ def deliver_overview(request):
     return render(request, 'inventory/out/overview.html', context)
 
 
-"""
-class DeliverView(LoginRequiredMixin, ListView):
-    template_name = 'inventory/out/overview.html'
-    model = Deliver
+def delivery_view_csv(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    fn = "delivery_" + datetime.datetime.now().strftime("%d-%m-%Y_%H-%M-%S") + ".csv"
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={
+            "Content-Disposition":
+                'attachment; filename=' + fn
+        },
+    )
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        """"""
-        return context
+    writer = csv.writer(response)
+    for inv in DeliveryTmp.objects.all():
+        writer.writerow([
+            inv.customer_name,
+            inv.treatment_name,
+            inv.asset_name,
+            inv.asset_price,
+            inv.quantity,
+            inv.paid
+        ])
+        # writer.writerow(["First row", "Foo", "Bar", "Baz"])
+        # writer.writerow(["Second row", "A", "B", "C", '"Testing"', "Here's a quote"])
 
-
-class DeliverNew(LoginRequiredMixin, FormMixin, ListView):
-    model = Deliver
-    template_name = 'inventory/out/create.html'
-    form_class = DeliverForm
-    login_url = 'manager:login'
-
-    def get_success_url(self):
-        return reverse('inventory:out_all')
-
-    def post(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return HttpResponseForbidden()
-
-        self.object = self.form_class
-        form = self.get_form()
-        if form.is_valid():
-            Deliver.objects.create(
-                userID=request.user.pk,
-                customer=form.cleaned_data['customer']
-            )
-            Inventory.objects.create(
-                idIO=Deliver.objects.all().count(),
-                asset=form.cleaned_data['asset'],
-                quantityIO=-form.cleaned_data['quantityIO']
-            )
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
-
-    def form_valid(self, form):
-        # Here, we would record the user's interest using the message # passed in form.cleaned_data['message']
-        return super().form_valid(form)
-
-
-class DeliverList(LoginRequiredMixin, DetailView):
-    queryset = Deliver.objects.select_related('customer')
-    template_name = 'inventory/out/list.html'
-    context_object_name = 'deliver'
-    login_url = 'manager:login'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        try:
-            query = Deliver.objects.filter(customer_id=51).order_by('timeO')
-            context["out_pros"] = query
-            return context
-        except ObjectDoesNotExist:
-            return context
-"""
+    return response

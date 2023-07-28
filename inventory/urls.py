@@ -17,8 +17,7 @@ urlpatterns = [
     path('inventory/new/', views.PurchaseNew.as_view(), name='inv_new'),
 
     path('invout/overview/', views.deliver_overview, name='out_all'),
-    # path('invout/new/', views.DeliverNew.as_view(), name='out_new'),
-    # path('invout/<int:pk>/list/', views.DeliverList.as_view(), name='out_list'),
+    path('invout/csv/', views.delivery_view_csv, name='out_all_csv'),
 
     # AssetCategory Routes
     path('assetcategory/', views.AssetCategoryAll.as_view(), name='ass_cat_all'),
